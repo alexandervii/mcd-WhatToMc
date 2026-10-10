@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今天吃了唛~ 麦当劳餐品智能推荐</title>
+<style>
+  :root {
+    --bg: #f5f6f7;
+    --card: #ffffff;
+    --primary: #ffbc0d;
+    --primary-dark: #e5a800;
+    --text: #1f2329;
+    --text-sub: #646a73;
+    --border: #e5e6e8;
+    --bubble-user: #ffbc0d;
+    --bubble-ai: #ffffff;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0; z-index: 10;
+  }
+  .logo {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, #ffbc0d, #ff8a00);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #fff; font-weight: 700; flex-shrink: 0;
+  }
+  .header-title { font-size: 17px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: var(--text-sub); }
+  .header-tag {
+    margin-left: auto; font-size: 11px; color: var(--text-sub);
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:#1f8a4c; margin-right:4px; }
+
+  .chat-wrap { flex: 1; overflow-y: auto; padding: 24px 0 16px; scroll-behavior: smooth; }
+  .chat-inner { max-width: 760px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  .welcome { text-align: center; padding: 24px 0 8px; }
+  .welcome-avatar {
+    width: 64px; height: 64px; border-radius: 18px;
+    background: linear-gradient(135deg, #ffbc0d, #ff8a00);
+    margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 32px; box-shadow: 0 8px 20px rgba(255,150,0,.3);
+  }
+  .welcome h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .welcome p { font-size: 14px; color: var(--text-sub); line-height: 1.6; }
+  .quick-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+  .quick-tag {
+    font-size: 13px; color: var(--text); background: var(--card);
+    border: 1px solid var(--border); padding: 7px 14px; border-radius: 999px;
+    cursor: pointer; transition: all .15s; user-select: none;
+  }
+  .quick-tag:hover { border-color: var(--primary); background: #fff8e6; }
+
+  .msg { display: flex; gap: 10px; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-avatar { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .msg.ai .msg-avatar { background: linear-gradient(135deg, #ffbc0d, #ff8a00); }
+  .msg.user .msg-avatar { background: #dfe3e8; }
+  .bubble { max-width: 80%; padding: 11px 14px; border-radius: 14px; font-size: 14px; line-height: 1.65; word-break: break-word; }
+  .msg.user .bubble { background: var(--bubble-user); color: #3a2c00; border-bottom-right-radius: 4px; }
+  .msg.ai .bubble { background: var(--bubble-ai); border: 1px solid var(--border); box-shadow: var(--shadow); border-bottom-left-radius: 4px; }
+  .bubble .think { font-size: 12px; color: var(--text-sub); background: #f2f3f5; border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; }
+
+  .rec-card { margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; }
+  .rec-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .rec-name { font-weight: 700; font-size: 14px; }
+  .rec-price { font-size: 16px; font-weight: 700; color: #d93025; white-space: nowrap; }
+  .rec-tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 8px; }
+  .rec-tag { font-size: 10px; color: #a06a00; background: #fff4d6; padding: 2px 7px; border-radius: 4px; }
+  .rec-tag.cat { background: #eef1f4; color: #646a73; }
+  .rec-nutr { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 12px; }
+  .nutr-item { text-align: center; background: #fafbfc; border-radius: 8px; padding: 7px 2px; }
+  .nutr-val { font-size: 14px; font-weight: 700; }
+  .nutr-label { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+  .nutr-item.kcal .nutr-val { color: #d93025; }
+  .nutr-item.protein .nutr-val { color: #1a73e8; }
+  .nutr-item.carb .nutr-val { color: #e8710a; }
+  .nutr-item.fat .nutr-val { color: #7b61ff; }
+  .rec-comp { padding: 8px 12px; font-size: 12px; color: var(--text-sub); border-top: 1px dashed var(--border); }
+  .rec-reason { padding: 8px 12px; font-size: 12px; color: var(--text-sub); border-top: 1px dashed var(--border); line-height: 1.5; }
+  .rec-reason b { color: var(--text); }
+  .tip { margin-top: 10px; font-size: 13px; color: #5c4a00; background: #fff8e6; border: 1px solid #ffe3a3; border-radius: 10px; padding: 10px 12px; line-height: 1.6; }
+
+  .input-bar { flex-shrink: 0; background: var(--card); border-top: 1px solid var(--border); padding: 12px 20px 16px; }
+  .input-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: flex-end; gap: 10px; }
+  .input-box {
+    flex: 1; border: 1px solid var(--border); border-radius: 14px; background: #fafbfc;
+    padding: 10px 14px; font-size: 14px; line-height: 1.5; resize: none; outline: none;
+    font-family: inherit; color: var(--text); max-height: 120px; transition: border .15s;
+  }
+  .input-box:focus { border-color: var(--primary); background: #fff; }
+  .send-btn {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--primary); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 18px; color: #3a2c00;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--primary-dark); }
+  .send-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .input-hint { max-width: 760px; margin: 8px auto 0; font-size: 11px; color: #a0a6ad; text-align: center; }
+
+  .typing { display: flex; gap: 4px; padding: 4px 0; }
+  .typing span { width: 7px; height: 7px; border-radius: 50%; background: #c9cdd4; animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: .2s; }
+  .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,60%,100% { opacity: .3; } 30% { opacity: 1; } }
+  .err { color: #d93025; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">M</div>
+    <div>
+      <div class="header-title">今天吃了唛~</div>
+      <div class="header-sub">麦当劳餐品智能推荐助手</div>
+    </div>
+    <div class="header-tag"><span class="dot"></span>mcd-mcp 实时数据</div>
+  </div>
+
+  <div class="chat-wrap" id="chatWrap">
+    <div class="chat-inner" id="chatInner">
+      <div class="welcome">
+        <div class="welcome-avatar">🍔</div>
+        <h1>今天吃了唛~</h1>
+        <p>我是你的「麦麦点餐搭子」，说出你的预算、口味、热量或营养需求，<br>我实时查询真实菜单，帮你挑出最合适的那一款。</p>
+        <div class="quick-tags">
+          <span class="quick-tag" data-q="30 元以内，不辣">💰 30 元以内</span>
+          <span class="quick-tag" data-q="500 大卡以内，高蛋白">💪 500大卡高蛋白</span>
+          <span class="quick-tag" data-q="40 元左右牛肉套餐">🥩 牛肉套餐</span>
+          <span class="quick-tag" data-q="低卡轻食，300 大卡以内">🥗 低卡轻食</span>
+          <span class="quick-tag" data-q="给孩子的开心乐园餐">🧒 开心乐园餐</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-inner">
+      <textarea class="input-box" id="inputBox" rows="1" placeholder="比如：30 元以内不辣 / 500 大卡高蛋白 / 想吃牛肉套餐..."></textarea>
+      <button class="send-btn" id="sendBtn" title="发送">➤</button>
+    </div>
+    <div class="input-hint">输入用餐需求，实时查询麦当劳菜单 · 后端直连 mcd-mcp</div>
+  </div>
+
+<script>
+const chatInner = document.getElementById('chatInner');
+const chatWrap = document.getElementById('chatWrap');
+const inputBox = document.getElementById('inputBox');
+const sendBtn = document.getElementById('sendBtn');
+
+function esc(s){ return String(s).replace(/[&<>"']/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x])); }
+function scrollBottom(){ requestAnimationFrame(() => { chatWrap.scrollTop = chatWrap.scrollHeight; }); }
+
+function condSummary(c) {
+  const parts = [];
+  if (c.priceMax != null && c.priceMin != null) parts.push(`价格 ${c.priceMin}-${c.priceMax} 元`);
+  else if (c.priceMax != null) parts.push(`价格 ≤ ${c.priceMax} 元`);
+  if (c.kcalMax != null) parts.push(`热量 ≤ ${c.kcalMax} 大卡`);
+  if (c.taste) parts.push(`口味：${c.taste}`);
+  if (c.goal) parts.push({高蛋白:'高蛋白',低脂:'低脂',低卡:'低卡'}[c.goal]);
+  if (c.mealType) parts.push(c.mealType);
+  if (c.isKids) parts.push('开心乐园餐');
+  return parts.length ? parts.join(' · ') : '综合推荐';
+}
+
+function reason(r, cond) {
+  const why = [];
+  if (cond.priceMax != null && r.price <= cond.priceMax) why.push(`价格 ${r.price} 元在预算内`);
+  if (cond.kcalMax != null && r.kcal != null && r.kcal <= cond.kcalMax) why.push(`热量 ${r.kcal} kcal 达标`);
+  if (cond.goal==="高蛋白" && r.protein != null) why.push(`蛋白质 ${r.protein}g 较高`);
+  if (cond.goal==="低脂" && r.fat != null) why.push(`脂肪仅 ${r.fat}g 偏低`);
+  if (cond.goal==="低卡" && r.kcal != null) why.push(`热量 ${r.kcal} kcal 较低`);
+  if (cond.taste) why.push(`符合「${cond.taste}」口味`);
+  if (cond.mealType==="套餐") why.push('套餐组合性价比高');
+  if (cond.isKids) why.push('儿童友好搭配');
+  if (!why.length) why.push('综合性价比与口味的人气之选');
+  return why.slice(0,3).join('；');
+}
+
+function addUserMsg(text) {
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="msg-avatar">🧑</div><div class="bubble">${esc(text)}</div>`;
+  chatInner.appendChild(div); scrollBottom();
+}
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = 'typing';
+  div.innerHTML = `<div class="msg-avatar">🍔</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatInner.appendChild(div); scrollBottom();
+}
+function removeTyping(){ const t = document.getElementById('typing'); if (t) t.remove(); }
+
+function addAiReply(data, rawText) {
+  const { cond, store, items } = data;
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  let html = `<div class="msg-avatar">🍔</div><div class="bubble">`;
+  html += `<div class="think">🔍 已解析条件：${esc(condSummary(cond))} ｜ 📍 ${esc(store.storeName)}</div>`;
+  if (!items.length) {
+    html += `<p>😅 抱歉，当前菜单里没有完全符合「${esc(condSummary(cond))}」的餐品。要不要放宽一点预算或热量限制？</p>`;
+  } else {
+    const top = items.slice(0, 4);
+    html += `<p>根据你的需求，为你找到 <b>${items.length}</b> 款，先看这 ${top.length} 款最合适的 👇</p>`;
+    for (const r of top) {
+      const kcal = r.kcal != null ? r.kcal : '—';
+      const p = r.protein != null ? `${r.protein}g` : '—';
+      const c = r.carb != null ? `${r.carb}g` : '—';
+      const f = r.fat != null ? `${r.fat}g` : '—';
+      html += `<div class="rec-card">
+        <div class="rec-head"><div class="rec-name">${esc(r.name)}</div><div class="rec-price">¥${r.price}</div></div>
+        <div class="rec-tags">${(r.tags||[]).map(t=>`<span class="rec-tag">${esc(t)}</span>`).join('')}${r.cat?`<span class="rec-tag cat">${esc(r.cat)}</span>`:''}</div>
+        <div class="rec-nutr">
+          <div class="nutr-item kcal"><div class="nutr-val">${kcal}</div><div class="nutr-label">热量(kcal)</div></div>
+          <div class="nutr-item protein"><div class="nutr-val">${p}</div><div class="nutr-label">蛋白质</div></div>
+          <div class="nutr-item carb"><div class="nutr-val">${c}</div><div class="nutr-label">碳水</div></div>
+          <div class="nutr-item fat"><div class="nutr-val">${f}</div><div class="nutr-label">脂肪</div></div>
+        </div>${r.estimated ? `<div style="padding:0 12px 8px;font-size:11px;color:#a06a00;">⚠️ 该餐品营养数据暂未收录，以上为同类餐品估算值</div>` : ''}`;
+      if (r.composition && r.composition.length) {
+        html += `<div class="rec-comp">🍱 套餐组成：${r.composition.map(x=>esc(x.name)).join(' + ')}</div>`;
+      }
+      html += `<div class="rec-reason">💡 <b>推荐理由：</b>${reason(r, cond)}</div></div>`;
+    }
+    html += `<div class="tip">🍟 麦麦小贴士：价格与营养为 mcd-mcp 实时查询结果；套餐营养为「默认组成」求和估算。想看更多或调整条件，直接跟我说~</div>`;
+  }
+  html += `</div>`;
+  div.innerHTML = html;
+  chatInner.appendChild(div); scrollBottom();
+}
+
+function addError(msg) {
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.innerHTML = `<div class="msg-avatar">🍔</div><div class="bubble err">⚠️ ${esc(msg)}</div>`;
+  chatInner.appendChild(div); scrollBottom();
+}
+
+async function send(text) {
+  text = (text || '').trim();
+  if (!text) return;
+  addUserMsg(text);
+  inputBox.value = ''; inputBox.style.height = 'auto';
+  addTyping();
+  sendBtn.disabled = true;
+  try {
+    const res = await fetch('/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    removeTyping();
+    if (data.success) addAiReply(data, text);
+    else addError(data.error || '出错了，请稍后再试');
+  } catch (e) {
+    removeTyping();
+    addError('无法连接推荐服务，请确认后端已启动（node server.js）');
+  } finally {
+    sendBtn.disabled = false;
+  }
+}
+
+sendBtn.addEventListener('click', () => send(inputBox.value));
+inputBox.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inputBox.value); }
+});
+inputBox.addEventListener('input', () => {
+  inputBox.style.height = 'auto';
+  inputBox.style.height = Math.min(inputBox.scrollHeight, 120) + 'px';
+});
+document.querySelectorAll('.quick-tag').forEach(tag => {
+  tag.addEventListener('click', () => send(tag.dataset.q));
+});
+</script>
+</body>
+</html>
