@@ -38,6 +38,7 @@ mcd-innovation-challenge/
 ├── README.md                 # 项目介绍、安装方法、使用示例、目标用户（本文件）
 ├── CONTEST_DECLARATION.md    # 参赛声明（官方原文，不可改动）
 ├── MCP_INTEGRATION.md        # MCP Server / Tool / 调用流程 / 业务价值说明
+├── mcp-config.example.json   # 脱敏 MCP 配置示例（Token 用环境变量占位符）
 ├── workbuddy.md              # WorkBuddy 开发对话上下文（联动奖励核验）
 ├── demo.py                   # 命令行演示脚本（内置营养+菜单快照，可离线跑通）
 ├── skills/

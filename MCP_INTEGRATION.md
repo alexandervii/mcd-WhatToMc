@@ -12,7 +12,7 @@
 | 认证方式 | 请求头 `Authorization: Bearer <MCP_TOKEN>` |
 | 限流 | 每分钟 600 次请求，超出返回 429 |
 
-配置 JSON 示例（Token 使用环境变量占位符，不提交真实凭证）：
+完整脱敏配置示例见仓库根目录的 `mcp-config.example.json`（Token 使用环境变量占位符，不提交真实凭证）：
 
 ```json
 {
@@ -21,7 +21,7 @@
       "type": "streamablehttp",
       "url": "https://mcp.mcd.cn",
       "headers": {
-        "Authorization": "Bearer YOUR_MCP_TOKEN"
+        "Authorization": "Bearer ${MCD_MCP_TOKEN}"
       }
     }
   }
