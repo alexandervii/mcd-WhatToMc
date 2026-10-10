@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="840" viewBox="0 0 1600 840" role="img">
+  <title>今天吃了唛~ 麦当劳餐品智能推荐 Skill 海报</title>
+  <desc>麦当劳餐品智能推荐 Skill「今天吃了唛~」，按价格、口味、热量、营养条件智能筛选真实在售餐品并给出营养化推荐。</desc>
+
+  <rect width="1600" height="840" fill="#FFF7E8"/>
+
+  <circle cx="1450" cy="140" r="210" fill="#FFBC0D"/>
+  <circle cx="150" cy="700" r="180" fill="#FFE3A3"/>
+  <circle cx="1530" cy="760" r="120" fill="#FFBC0D"/>
+
+  <g transform="translate(180 150)">
+    <rect x="0" y="0" width="230" height="230" rx="52" fill="#FFC72C" transform="rotate(45 115 115)"/>
+    <rect x="30" y="30" width="170" height="170" rx="40" fill="#F5E6C8" transform="rotate(45 115 115)"/>
+    <rect x="52" y="52" width="126" height="126" rx="30" fill="#FFF7E8" transform="rotate(45 115 115)"/>
+    <rect x="76" y="76" width="78" height="78" rx="18" fill="#E5A800" transform="rotate(45 115 115)"/>
+  </g>
+
+  <text x="140" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="52" font-weight="700" fill="#FFC72C">🍔</text>
+
+  <text x="120" y="360" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="88" font-weight="800" fill="#1F2329">今天吃了唛~</text>
+  <text x="122" y="440" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="40" font-weight="600" fill="#D93025">麦当劳餐品智能推荐 Skill</text>
+  <text x="122" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#646A73">一句话说出预算、口味、热量、营养，从真实菜单里挑出最合适的那一餐</text>
+
+  <g transform="translate(120 560)">
+    <rect x="0" y="0" width="220" height="64" rx="32" fill="#FFC72C"/>
+    <text x="110" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-weight="600" fill="#3A2C00" text-anchor="middle">价格区间</text>
+  </g>
+  <g transform="translate(356 560)">
+    <rect x="0" y="0" width="220" height="64" rx="32" fill="#FFC72C"/>
+    <text x="110" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-weight="600" fill="#3A2C00" text-anchor="middle">口味偏好</text>
+  </g>
+  <g transform="translate(592 560)">
+    <rect x="0" y="0" width="220" height="64" rx="32" fill="#FFC72C"/>
+    <text x="110" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-weight="600" fill="#3A2C00" text-anchor="middle">营养搭配</text>
+  </g>
+  <g transform="translate(828 560)">
+    <rect x="0" y="0" width="220" height="64" rx="32" fill="#FFC72C"/>
+    <text x="110" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-weight="600" fill="#3A2C00" text-anchor="middle">热量控制</text>
+  </g>
+
+  <g transform="translate(120 680)">
+    <circle cx="14" cy="-6" r="10" fill="#E8710A"/>
+    <text x="40" y="4" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-weight="500" fill="#5C4A00">真实在售餐品 · 价格 + 热量 + 蛋白质 + 碳水 + 脂肪</text>
+  </g>
+
+  <rect x="1060" y="240" width="420" height="430" rx="36" fill="#FFFFFF"/>
+  <rect x="1080" y="260" width="380" height="230" rx="20" fill="#FFF4D6"/>
+  <circle cx="1270" cy="310" r="52" fill="#F5E6C8"/>
+  <circle cx="1270" cy="375" r="60" fill="#E5A800"/>
+  <circle cx="1270" cy="430" r="46" fill="#C9CDD4"/>
+  <rect x="1190" y="500" width="160" height="26" rx="13" fill="#FFC72C"/>
+  <text x="1270" y="610" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="700" fill="#1F2329" text-anchor="middle">巨无霸三件套</text>
+  <text x="1270" y="652" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="500" fill="#D93025" text-anchor="middle">¥42 · 949 kcal · 31g 蛋白</text>
+</svg>
