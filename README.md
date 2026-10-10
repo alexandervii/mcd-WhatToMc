@@ -101,6 +101,19 @@ mcd-innovation-challenge/
 
 项目附带一个**豆包风格的对话式推荐网页**，可直观体验完整推荐流程。
 
+**🌐 在线体验：<https://alexandervii.github.io/mcd-WhatToMc/>**（纯前端离线版，点开即用）
+
+### 界面截图
+
+**欢迎页**——说出预算、口味、热量或营养需求，或点击快捷标签一键体验：
+
+![欢迎页](docs/screenshot-welcome.png)
+
+**对话推荐**——输入「30 元以内，不辣」后的推荐结果，每个餐品附带价格、热量与三大营养素、推荐理由：
+
+![对话推荐](docs/screenshot-demo.png)
+
+
 ### 架构
 
 ```
